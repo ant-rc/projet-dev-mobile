@@ -1,5 +1,6 @@
 import type {
   Event,
+  FriendProfile,
   Match,
   Participant,
   Restaurant,
@@ -14,6 +15,7 @@ export interface AppState {
   user: User | null;
   events: Record<UUID, Event>;
   participantsByEvent: Record<UUID, Participant[]>;
+  friendsByEvent: Record<UUID, FriendProfile[]>;
   swipesByEvent: Record<UUID, Swipe[]>;
   restaurantsByEvent: Record<UUID, Restaurant[]>;
   matchByEvent: Record<UUID, Match | null>;
@@ -28,6 +30,9 @@ export type Action =
   | { type: 'EVENT_REMOVE'; payload: UUID }
   | { type: 'PARTICIPANTS_SET'; payload: { eventId: UUID; items: Participant[] } }
   | { type: 'PARTICIPANT_ADD'; payload: Participant }
+  | { type: 'FRIENDS_SET'; payload: { eventId: UUID; items: FriendProfile[] } }
+  | { type: 'FRIEND_ADD'; payload: { eventId: UUID; friend: FriendProfile } }
+  | { type: 'FRIEND_REMOVE'; payload: { eventId: UUID; friendId: UUID } }
   | { type: 'SWIPES_SET'; payload: { eventId: UUID; items: Swipe[] } }
   | { type: 'SWIPE_RECORD'; payload: Swipe }
   | { type: 'RESTAURANTS_SET'; payload: { eventId: UUID; items: Restaurant[] } }
@@ -41,6 +46,7 @@ export const initialState: AppState = {
   user: null,
   events: {},
   participantsByEvent: {},
+  friendsByEvent: {},
   swipesByEvent: {},
   restaurantsByEvent: {},
   matchByEvent: {},

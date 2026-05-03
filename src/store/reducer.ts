@@ -46,6 +46,39 @@ export function reducer(state: AppState, action: Action): AppState {
       };
     }
 
+    case 'FRIENDS_SET':
+      return {
+        ...state,
+        friendsByEvent: {
+          ...state.friendsByEvent,
+          [action.payload.eventId]: action.payload.items,
+        },
+      };
+
+    case 'FRIEND_ADD': {
+      const { eventId, friend } = action.payload;
+      const current = state.friendsByEvent[eventId] ?? [];
+      if (current.some((f) => f.id === friend.id)) return state;
+      return {
+        ...state,
+        friendsByEvent: {
+          ...state.friendsByEvent,
+          [eventId]: [...current, friend],
+        },
+      };
+    }
+
+    case 'FRIEND_REMOVE': {
+      const { eventId, friendId } = action.payload;
+      const current = state.friendsByEvent[eventId] ?? [];
+      const next = current.filter((f) => f.id !== friendId);
+      if (next.length === current.length) return state;
+      return {
+        ...state,
+        friendsByEvent: { ...state.friendsByEvent, [eventId]: next },
+      };
+    }
+
     case 'SWIPES_SET':
       return {
         ...state,

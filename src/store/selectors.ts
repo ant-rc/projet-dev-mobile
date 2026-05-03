@@ -1,4 +1,13 @@
-import type { Event, Match, Participant, Restaurant, Swipe, User, UUID } from '@/src/types/models';
+import type {
+  Event,
+  FriendProfile,
+  Match,
+  Participant,
+  Restaurant,
+  Swipe,
+  User,
+  UUID,
+} from '@/src/types/models';
 
 import type { AppState } from './types';
 
@@ -14,6 +23,18 @@ export const selectEventById = (state: AppState, eventId: UUID): Event | undefin
 
 export const selectParticipants = (state: AppState, eventId: UUID): Participant[] =>
   state.participantsByEvent[eventId] ?? [];
+
+export const selectFriends = (state: AppState, eventId: UUID): FriendProfile[] =>
+  state.friendsByEvent[eventId] ?? [];
+
+export const selectFriendById = (
+  state: AppState,
+  eventId: UUID,
+  friendId: UUID,
+): FriendProfile | undefined => selectFriends(state, eventId).find((f) => f.id === friendId);
+
+export const selectTotalSwipersCount = (state: AppState, eventId: UUID): number =>
+  (state.user ? 1 : 0) + selectFriends(state, eventId).length;
 
 export const selectAllSwipes = (state: AppState, eventId: UUID): Swipe[] =>
   state.swipesByEvent[eventId] ?? [];
