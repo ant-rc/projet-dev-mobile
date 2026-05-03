@@ -1,6 +1,6 @@
 import { hasGooglePlacesKey } from '@/src/constants/config';
 import type { GooglePlacesNearbyResponse } from '@/src/types/api';
-import type { PriceLevel, Restaurant } from '@/src/types/models';
+import type { PlaceType, PriceLevel, Restaurant } from '@/src/types/models';
 
 import { placesGet } from './client';
 import { mapNearbyToRestaurant } from './mappers';
@@ -10,6 +10,7 @@ export interface SearchNearbyParams {
   lat: number;
   lng: number;
   radiusMeters: number;
+  placeType?: PlaceType;
   priceLevels?: PriceLevel[];
   minRating?: number;
 }
@@ -34,7 +35,7 @@ export async function searchNearby(params: SearchNearbyParams): Promise<Restaura
   const query: Record<string, string> = {
     location: `${params.lat},${params.lng}`,
     radius: String(params.radiusMeters),
-    type: 'restaurant',
+    type: params.placeType ?? 'restaurant',
   };
   if (params.priceLevels && params.priceLevels.length > 0) {
     query.minprice = String(Math.min(...params.priceLevels));

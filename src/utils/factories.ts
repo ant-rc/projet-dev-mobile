@@ -3,6 +3,7 @@ import type {
   Event,
   EventFilters,
   GeoPoint,
+  PlaceType,
   PriceLevel,
   Swipe,
   SwipeDirection,
@@ -52,6 +53,7 @@ export interface CreateEventInput {
   hostId: UUID;
   location: GeoPoint;
   radiusMeters?: number;
+  placeType?: PlaceType;
   priceLevels?: PriceLevel[];
   cuisineTags?: string[];
   matchThreshold?: number;
@@ -64,6 +66,7 @@ export function createEvent(input: CreateEventInput): Event {
       lng: input.location.lng,
       radiusMeters: input.radiusMeters ?? DEFAULT_RADIUS_METERS,
     },
+    placeType: input.placeType ?? 'restaurant',
     priceLevels: input.priceLevels ?? [],
     cuisineTags: input.cuisineTags ?? [],
   };

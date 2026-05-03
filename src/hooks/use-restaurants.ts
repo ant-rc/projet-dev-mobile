@@ -34,6 +34,7 @@ export function useRestaurants(eventId: UUID): UseRestaurantsResult {
           lat: event.filters.location.lat,
           lng: event.filters.location.lng,
           radiusMeters: event.filters.location.radiusMeters,
+          placeType: event.filters.placeType,
           priceLevels:
             event.filters.priceLevels.length > 0 ? event.filters.priceLevels : undefined,
         });

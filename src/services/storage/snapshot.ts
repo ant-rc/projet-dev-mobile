@@ -3,7 +3,7 @@ import type { AppState } from '@/src/store/types';
 import { getJson, removeKey, setJson } from './client';
 
 const SNAPSHOT_KEY = 'state-snapshot';
-const SNAPSHOT_VERSION = 1;
+const SNAPSHOT_VERSION = 2;
 
 type PersistedAppState = Omit<AppState, 'status' | 'error'>;
 

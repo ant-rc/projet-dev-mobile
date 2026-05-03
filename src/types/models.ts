@@ -13,6 +13,8 @@ export type EventStatus = 'lobby' | 'swiping' | 'matched' | 'cancelled';
 
 export type PriceLevel = 1 | 2 | 3 | 4;
 
+export type PlaceType = 'restaurant' | 'bar' | 'cafe' | 'bakery' | 'night_club';
+
 export interface GeoPoint {
   lat: number;
   lng: number;
@@ -20,6 +22,7 @@ export interface GeoPoint {
 
 export interface EventFilters {
   location: GeoPoint & { radiusMeters: number };
+  placeType: PlaceType;
   priceLevels: PriceLevel[];
   cuisineTags: string[];
 }
