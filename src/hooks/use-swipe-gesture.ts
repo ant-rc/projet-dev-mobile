@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, type ViewStyle } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import {
   runOnJS,
@@ -7,6 +7,7 @@ import {
   useSharedValue,
   withSpring,
   withTiming,
+  type AnimatedStyle,
   type SharedValue,
 } from 'react-native-reanimated';
 
@@ -24,7 +25,7 @@ interface UseSwipeGestureParams {
 
 interface UseSwipeGestureResult {
   gesture: ReturnType<typeof Gesture.Pan>;
-  animatedStyle: ReturnType<typeof useAnimatedStyle>;
+  animatedStyle: AnimatedStyle<ViewStyle>;
   translateX: SharedValue<number>;
   reset: () => void;
 }
