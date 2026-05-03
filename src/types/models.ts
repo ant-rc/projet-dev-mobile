@@ -55,6 +55,20 @@ export interface Restaurant {
   openingHours?: string[];
 }
 
+export interface FriendPreferences {
+  likedTags: string[];
+  dislikedTags: string[];
+  preferredPriceLevels: PriceLevel[];
+  minRating: number;
+}
+
+export interface FriendProfile {
+  id: UUID;
+  pseudo: string;
+  avatarColor: string;
+  preferences: FriendPreferences;
+}
+
 export type SwipeDirection = 'like' | 'skip';
 
 export interface Swipe {
