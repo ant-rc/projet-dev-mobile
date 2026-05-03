@@ -25,7 +25,7 @@ export default function ProfileScreen() {
           onPress: async () => {
             await clearSnapshot();
             dispatch({ type: 'RESET' });
-            router.replace('/');
+            router.replace('/(auth)/join');
           },
         },
       ],
