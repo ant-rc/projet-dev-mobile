@@ -7,6 +7,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { FontSize, Palette, Radii, Spacing } from '@/src/constants/theme';
@@ -72,19 +73,33 @@ export function FriendListItem({
 
   if (interactive) {
     return (
-      <Pressable
-        onPress={() => onToggle(friend.id)}
-        style={({ pressed }) => [containerStyle, pressed && styles.pressed]}
-        accessibilityRole="button"
-        accessibilityLabel={`${invited ? 'Retirer' : 'Inviter'} ${friend.pseudo}`}
-        accessibilityState={{ selected: invited }}
+      <Animated.View
+        entering={FadeIn.duration(250)}
+        exiting={FadeOut.duration(150)}
+        layout={LinearTransition.springify()}
       >
-        {body}
-      </Pressable>
+        <Pressable
+          onPress={() => onToggle(friend.id)}
+          style={({ pressed }) => [containerStyle, pressed && styles.pressed]}
+          accessibilityRole="button"
+          accessibilityLabel={`${invited ? 'Retirer' : 'Inviter'} ${friend.pseudo}`}
+          accessibilityState={{ selected: invited }}
+        >
+          {body}
+        </Pressable>
+      </Animated.View>
     );
   }
 
-  return <View style={containerStyle}>{body}</View>;
+  return (
+    <Animated.View
+      entering={FadeIn.duration(250)}
+      layout={LinearTransition.springify()}
+      style={containerStyle}
+    >
+      {body}
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({

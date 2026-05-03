@@ -2,6 +2,7 @@ import { router, type Href } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { useCallback } from 'react';
 import { FlatList, Pressable, StyleSheet, View, type ListRenderItem } from 'react-native';
+import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -89,24 +90,26 @@ function EventListItem({ event, friendsCount, onPress }: EventListItemProps) {
   );
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.item,
-        { backgroundColor: surfaceColor },
-        pressed && styles.pressed,
-      ]}
-      accessibilityRole="button"
-      accessibilityLabel={`Ouvrir l'event ${event.name}`}
-    >
-      <View style={styles.itemInfo}>
-        <ThemedText type="defaultSemiBold">{event.name}</ThemedText>
-        <ThemedText style={[styles.itemMeta, { color: mutedColor }]}>
-          {friendsCount} ami{friendsCount > 1 ? 's' : ''} · {STATUS_LABEL[event.status]}
-        </ThemedText>
-      </View>
-      <ChevronRight size={20} color={mutedColor} />
-    </Pressable>
+    <Animated.View entering={FadeInDown.duration(300)} layout={LinearTransition.springify()}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.item,
+          { backgroundColor: surfaceColor },
+          pressed && styles.pressed,
+        ]}
+        accessibilityRole="button"
+        accessibilityLabel={`Ouvrir l'event ${event.name}`}
+      >
+        <View style={styles.itemInfo}>
+          <ThemedText type="defaultSemiBold">{event.name}</ThemedText>
+          <ThemedText style={[styles.itemMeta, { color: mutedColor }]}>
+            {friendsCount} ami{friendsCount > 1 ? 's' : ''} · {STATUS_LABEL[event.status]}
+          </ThemedText>
+        </View>
+        <ChevronRight size={20} color={mutedColor} />
+      </Pressable>
+    </Animated.View>
   );
 }
 
