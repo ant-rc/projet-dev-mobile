@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -19,6 +20,7 @@ interface ButtonProps extends Omit<PressableProps, 'style' | 'children'> {
   size?: ButtonSize;
   loading?: boolean;
   fullWidth?: boolean;
+  icon?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -29,6 +31,7 @@ export function Button({
   loading = false,
   disabled = false,
   fullWidth = false,
+  icon,
   style,
   ...rest
 }: ButtonProps) {
@@ -55,7 +58,10 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={variantStyle.label.color} size="small" />
       ) : (
-        <Text style={[styles.labelBase, variantStyle.label, sizeStyle.label]}>{label}</Text>
+        <>
+          {icon}
+          <Text style={[styles.labelBase, variantStyle.label, sizeStyle.label]}>{label}</Text>
+        </>
       )}
     </Pressable>
   );
