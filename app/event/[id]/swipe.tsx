@@ -1,9 +1,9 @@
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { useEffect, useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { SwipeActions, SwipeStack } from '@/src/components/swipe';
+import { SwipeActions, SwipeCardSkeleton, SwipeStack } from '@/src/components/swipe';
 import { EmptyState, Screen } from '@/src/components/ui';
 import { Spacing } from '@/src/constants/theme';
 import { useRestaurants } from '@/src/hooks/use-restaurants';
@@ -67,10 +67,16 @@ export default function SwipeScreen() {
   if (loading && restaurants.length === 0) {
     return (
       <Screen padding="lg">
-        <View style={styles.center}>
-          <ActivityIndicator size="large" />
+        <View style={styles.header}>
+          <ThemedText type="title" numberOfLines={1}>
+            {event.name}
+          </ThemedText>
           <ThemedText style={styles.muted}>Recherche des restaurants…</ThemedText>
         </View>
+        <View style={styles.stackContainer}>
+          <SwipeCardSkeleton />
+        </View>
+        <SwipeActions onLike={() => {}} onSkip={() => {}} disabled />
       </Screen>
     );
   }
@@ -129,11 +135,5 @@ const styles = StyleSheet.create({
   stackContainer: {
     flex: 1,
     marginVertical: Spacing.md,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.md,
   },
 });
