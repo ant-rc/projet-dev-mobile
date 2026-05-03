@@ -15,6 +15,7 @@ import {
   selectRestaurants,
 } from '@/src/store/selectors';
 import type { UUID } from '@/src/types/models';
+import { buildMapsUrl } from '@/src/utils/maps';
 
 export default function MatchScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -57,9 +58,7 @@ export default function MatchScreen() {
   }
 
   const handleOpenMaps = (): void => {
-    const { lat, lng } = restaurant.location;
-    const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-    void Linking.openURL(url);
+    void Linking.openURL(buildMapsUrl(restaurant));
   };
 
   const handleBack = (): void => {
