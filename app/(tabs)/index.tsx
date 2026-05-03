@@ -1,6 +1,7 @@
 import { router, type Href } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useCallback } from 'react';
+import { FlatList, Pressable, StyleSheet, View, type ListRenderItem } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -21,44 +22,57 @@ export default function EventsScreen() {
   const { state } = useApp();
   const events = selectAllEvents(state);
 
-  const handleCreate = (): void => {
+  const handleCreate = useCallback((): void => {
     router.push('/event/create' as Href);
-  };
+  }, []);
 
-  const handleOpenEvent = (eventId: UUID): void => {
+  const handleOpenEvent = useCallback((eventId: UUID): void => {
     router.push(`/event/${eventId}/lobby` as Href);
-  };
+  }, []);
 
-  if (events.length === 0) {
-    return (
-      <Screen padding="lg">
-        <EmptyState
-          title="Aucun event"
-          description="Crée ton premier event pour trouver un resto avec tes amis."
-          action={{ label: '+ Créer un event', onPress: handleCreate }}
-        />
-      </Screen>
-    );
-  }
+  const renderItem: ListRenderItem<Event> = useCallback(
+    ({ item }) => (
+      <EventListItem
+        event={item}
+        friendsCount={selectFriends(state, item.id).length}
+        onPress={() => handleOpenEvent(item.id)}
+      />
+    ),
+    [state, handleOpenEvent],
+  );
+
+  const keyExtractor = useCallback((item: Event): string => item.id, []);
 
   return (
-    <Screen padding="lg" scrollable>
-      <View style={styles.header}>
-        <ThemedText type="title">Mes events</ThemedText>
-        <Button label="+ Nouveau" onPress={handleCreate} size="sm" />
-      </View>
-      <View style={styles.list}>
-        {events.map((event) => (
-          <EventListItem
-            key={event.id}
-            event={event}
-            friendsCount={selectFriends(state, event.id).length}
-            onPress={() => handleOpenEvent(event.id)}
+    <Screen padding="none">
+      <FlatList
+        data={events}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={
+          events.length > 0 ? (
+            <View style={styles.header}>
+              <ThemedText type="title">Mes events</ThemedText>
+              <Button label="+ Nouveau" onPress={handleCreate} size="sm" />
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={
+          <EmptyState
+            title="Aucun event"
+            description="Crée ton premier event pour trouver un resto avec tes amis."
+            action={{ label: '+ Créer un event', onPress: handleCreate }}
           />
-        ))}
-      </View>
+        }
+      />
     </Screen>
   );
+}
+
+function ItemSeparator() {
+  return <View style={styles.separator} />;
 }
 
 interface EventListItemProps {
@@ -97,13 +111,18 @@ function EventListItem({ event, friendsCount, onPress }: EventListItemProps) {
 }
 
 const styles = StyleSheet.create({
+  listContent: {
+    flexGrow: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: Spacing.lg,
   },
-  list: { gap: Spacing.sm },
+  separator: { height: Spacing.sm },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
