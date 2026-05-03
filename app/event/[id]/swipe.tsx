@@ -60,6 +60,10 @@ export default function SwipeScreen() {
     }
   };
 
+  const handleInfoPress = (restaurantId: string): void => {
+    router.push(`/restaurant/${restaurantId}` as Href);
+  };
+
   if (loading && restaurants.length === 0) {
     return (
       <Screen padding="lg">
@@ -99,6 +103,7 @@ export default function SwipeScreen() {
         <SwipeStack
           restaurants={remaining}
           onSwipe={handleSwipe}
+          onInfoPress={handleInfoPress}
           emptyTitle="Plus de restaurants"
           emptyDescription="Tu as tout swipé pour cet event."
         />

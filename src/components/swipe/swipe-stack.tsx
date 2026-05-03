@@ -10,6 +10,7 @@ import { SwipeCard } from './swipe-card';
 interface SwipeStackProps {
   restaurants: Restaurant[];
   onSwipe: (restaurantId: string, direction: SwipeDirection) => void;
+  onInfoPress?: (restaurantId: string) => void;
   emptyTitle?: string;
   emptyDescription?: string;
 }
@@ -20,6 +21,7 @@ const TRANSLATE_Y_STEP = 8;
 export function SwipeStack({
   restaurants,
   onSwipe,
+  onInfoPress,
   emptyTitle = 'Plus de restaurants',
   emptyDescription = 'Tu as tout swipé pour ce groupe.',
 }: SwipeStackProps) {
@@ -48,6 +50,7 @@ export function SwipeStack({
               <SwipeCard
                 restaurant={restaurant}
                 onSwipe={(direction) => onSwipe(restaurant.id, direction)}
+                onInfoPress={onInfoPress ? () => onInfoPress(restaurant.id) : undefined}
               />
             ) : (
               <RestaurantCard restaurant={restaurant} style={styles.staticCard} />
