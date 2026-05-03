@@ -1,4 +1,5 @@
 import { router, type Href } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -90,7 +91,7 @@ function EventListItem({ event, friendsCount, onPress }: EventListItemProps) {
           {friendsCount} ami{friendsCount > 1 ? 's' : ''} · {STATUS_LABEL[event.status]}
         </ThemedText>
       </View>
-      <ThemedText style={[styles.chevron, { color: mutedColor }]}>›</ThemedText>
+      <ChevronRight size={20} color={mutedColor} />
     </Pressable>
   );
 }
@@ -112,6 +113,5 @@ const styles = StyleSheet.create({
   },
   itemInfo: { flex: 1, gap: Spacing.xs },
   itemMeta: { fontSize: FontSize.sm },
-  chevron: { fontSize: FontSize.xxl },
   pressed: { opacity: 0.7 },
 });

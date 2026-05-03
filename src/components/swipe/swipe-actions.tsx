@@ -1,7 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Heart, X } from 'lucide-react-native';
+import type { ReactNode } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { FontSize, Palette, Radii, Spacing } from '@/src/constants/theme';
+import { Palette, Radii, Spacing } from '@/src/constants/theme';
 import { useHaptics } from '@/src/hooks/use-haptics';
 
 interface SwipeActionsProps {
@@ -27,16 +29,18 @@ export function SwipeActions({ onLike, onSkip, disabled = false }: SwipeActionsP
   return (
     <View style={styles.container}>
       <ActionButton
-        icon="✕"
-        color={Palette.danger}
+        icon={<X size={32} color={Palette.danger} strokeWidth={3} />}
+        borderColor={Palette.danger}
         backgroundColor={buttonBackground}
         onPress={handleSkip}
         disabled={disabled}
         accessibilityLabel="Passer ce restaurant"
       />
       <ActionButton
-        icon="♥"
-        color={Palette.success}
+        icon={
+          <Heart size={32} color={Palette.success} fill={Palette.success} strokeWidth={3} />
+        }
+        borderColor={Palette.success}
         backgroundColor={buttonBackground}
         onPress={handleLike}
         disabled={disabled}
@@ -47,8 +51,8 @@ export function SwipeActions({ onLike, onSkip, disabled = false }: SwipeActionsP
 }
 
 interface ActionButtonProps {
-  icon: string;
-  color: string;
+  icon: ReactNode;
+  borderColor: string;
   backgroundColor: string;
   onPress: () => void;
   disabled: boolean;
@@ -57,7 +61,7 @@ interface ActionButtonProps {
 
 function ActionButton({
   icon,
-  color,
+  borderColor,
   backgroundColor,
   onPress,
   disabled,
@@ -72,12 +76,12 @@ function ActionButton({
       accessibilityState={{ disabled }}
       style={({ pressed }) => [
         styles.button,
-        { borderColor: color, backgroundColor },
+        { borderColor, backgroundColor },
         pressed && !disabled && styles.pressed,
         disabled && styles.disabled,
       ]}
     >
-      <Text style={[styles.icon, { color }]}>{icon}</Text>
+      {icon}
     </Pressable>
   );
 }
@@ -101,10 +105,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
-  icon: {
-    fontSize: FontSize.xxl,
-    fontWeight: '700',
   },
   pressed: {
     opacity: 0.85,

@@ -1,3 +1,4 @@
+import { Check, Plus } from 'lucide-react-native';
 import {
   Pressable,
   StyleSheet,
@@ -57,14 +58,11 @@ export function FriendListItem({
             },
           ]}
         >
-          <Text
-            style={[
-              styles.badgeIcon,
-              { color: invited ? Palette.white : Palette.primary },
-            ]}
-          >
-            {invited ? '✓' : '+'}
-          </Text>
+          {invited ? (
+            <Check size={18} color={Palette.white} strokeWidth={3} />
+          ) : (
+            <Plus size={18} color={Palette.primary} strokeWidth={3} />
+          )}
         </View>
       )}
     </>
@@ -108,6 +106,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeIcon: { fontSize: FontSize.lg, fontWeight: '700' },
   pressed: { opacity: 0.7 },
 });

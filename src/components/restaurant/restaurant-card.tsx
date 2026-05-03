@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { UtensilsCrossed } from 'lucide-react-native';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -35,7 +36,7 @@ export function RestaurantCard({ restaurant, style }: RestaurantCardProps) {
         />
       ) : (
         <View style={[styles.photo, styles.photoFallback]}>
-          <Text style={styles.fallbackEmoji}>🍽️</Text>
+          <UtensilsCrossed size={64} color={Palette.mutedLight} />
         </View>
       )}
 
@@ -80,9 +81,6 @@ const styles = StyleSheet.create({
   photoFallback: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  fallbackEmoji: {
-    fontSize: FontSize.xxxl * 1.5,
   },
   info: {
     padding: Spacing.lg,
