@@ -10,7 +10,7 @@ import {
   PriceFilter,
 } from '@/src/components/event';
 import { Button, Input, Screen } from '@/src/components/ui';
-import { Spacing } from '@/src/constants/theme';
+import { FontSize, Spacing } from '@/src/constants/theme';
 import { useLocation } from '@/src/hooks/use-location';
 import { useApp } from '@/src/store/app-context';
 import type { FriendProfile, PlaceType, PriceLevel, UUID } from '@/src/types/models';
@@ -18,6 +18,7 @@ import { createEvent } from '@/src/utils/factories';
 import { FRIEND_PRESETS, getFriendPresetById } from '@/src/utils/friend-presets';
 
 const MIN_NAME_LENGTH = 2;
+const MAX_NAME_LENGTH = 40;
 
 export default function CreateEventScreen() {
   const { state, dispatch } = useApp();
@@ -30,7 +31,15 @@ export default function CreateEventScreen() {
   const [invitedIds, setInvitedIds] = useState<UUID[]>([]);
 
   const invitedSet = useMemo(() => new Set(invitedIds), [invitedIds]);
-  const isValid = name.trim().length >= MIN_NAME_LENGTH;
+  const hasValidName = name.trim().length >= MIN_NAME_LENGTH;
+  const hasInvitedFriends = invitedIds.length > 0;
+  const isValid = hasValidName && hasInvitedFriends;
+
+  const validationHint = !hasValidName
+    ? 'Donne un nom à ton event.'
+    : !hasInvitedFriends
+      ? 'Invite au moins un ami pour démarrer.'
+      : null;
 
   const toggleFriend = (friendId: UUID): void => {
     setInvitedIds((prev) =>
@@ -73,7 +82,10 @@ export default function CreateEventScreen() {
           placeholder="Soirée copains"
           value={name}
           onChangeText={setName}
-          maxLength={40}
+          helperText={
+            name.length > 0 ? `${name.length}/${MAX_NAME_LENGTH} caractères` : undefined
+          }
+          maxLength={MAX_NAME_LENGTH}
           autoFocus
         />
       </View>
@@ -110,6 +122,7 @@ export default function CreateEventScreen() {
           fullWidth
           size="lg"
         />
+        {validationHint && <ThemedText style={styles.hint}>{validationHint}</ThemedText>}
       </View>
     </Screen>
   );
@@ -123,5 +136,11 @@ const styles = StyleSheet.create({
   cta: {
     paddingTop: Spacing.lg,
     paddingBottom: Spacing.xl,
+    gap: Spacing.sm,
+  },
+  hint: {
+    textAlign: 'center',
+    opacity: 0.7,
+    fontSize: FontSize.sm,
   },
 });
