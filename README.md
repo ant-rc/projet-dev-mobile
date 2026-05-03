@@ -92,43 +92,32 @@ projet-dev-mobile/
 - npm 10+
 - Expo Go installé sur ton téléphone (iOS / Android)
 
-### Installation
+### Installation et lancement
 
 ```bash
 npm install
+npx expo start
 ```
 
-### Variables d'environnement
+Scanner le QR code avec l'app Expo Go.
+
+L'application fonctionne **en mode mock par défaut** : 10 restaurants Paris en dur, aucune configuration externe nécessaire. Le flow complet (création d'event, invitation d'amis simulés, swipe, match) est entièrement démontrable sans clé API.
+
+### Optionnel : activer Google Places en live
+
+Pour remplacer les mocks par de vrais restaurants via Google Places API :
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Puis édite `.env.local` :
+Renseigner une clé dans `.env.local` (Application restrictions = "None" en dev) :
 
 ```
-EXPO_PUBLIC_GOOGLE_PLACES_KEY=<ta_clé_google_places>
+EXPO_PUBLIC_GOOGLE_PLACES_KEY=<ta_clé>
 ```
 
-Sans clé, l'app utilise des données mock (10 restaurants Paris en dur). Avec clé, elle interroge Google Places API en live.
-
-### Configuration Google Cloud (si tu utilises l'API)
-
-Sur [Google Cloud Console](https://console.cloud.google.com/apis/credentials) :
-
-1. Créer une clé API
-2. Activer **Places API** et **Places API (New)**
-3. Application restrictions :
-   - "None" pour tests rapides en dev
-   - Sinon : restreindre par bundle ID (`host.exp.Exponent` pour Expo Go)
-
-### Lancement
-
-```bash
-npx expo start
-```
-
-Scanner le QR code avec l'app Expo Go.
+Redémarrer Metro (`npx expo start --clear`) pour prendre en compte la variable.
 
 ## Commandes
 
