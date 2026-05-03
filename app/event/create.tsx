@@ -6,13 +6,14 @@ import { ThemedText } from '@/components/themed-text';
 import {
   CuisineFilter,
   FriendPickerGrid,
+  PlaceTypeFilter,
   PriceFilter,
 } from '@/src/components/event';
 import { Button, Input, Screen } from '@/src/components/ui';
 import { Spacing } from '@/src/constants/theme';
 import { useLocation } from '@/src/hooks/use-location';
 import { useApp } from '@/src/store/app-context';
-import type { FriendProfile, PriceLevel, UUID } from '@/src/types/models';
+import type { FriendProfile, PlaceType, PriceLevel, UUID } from '@/src/types/models';
 import { createEvent } from '@/src/utils/factories';
 import { FRIEND_PRESETS, getFriendPresetById } from '@/src/utils/friend-presets';
 
@@ -23,6 +24,7 @@ export default function CreateEventScreen() {
   const { location } = useLocation();
 
   const [name, setName] = useState('');
+  const [placeType, setPlaceType] = useState<PlaceType>('restaurant');
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [prices, setPrices] = useState<PriceLevel[]>([]);
   const [invitedIds, setInvitedIds] = useState<UUID[]>([]);
@@ -43,6 +45,7 @@ export default function CreateEventScreen() {
       name: name.trim(),
       hostId: state.user.id,
       location,
+      placeType,
       priceLevels: prices,
       cuisineTags: cuisines,
     });
@@ -73,6 +76,11 @@ export default function CreateEventScreen() {
           maxLength={40}
           autoFocus
         />
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText type="defaultSemiBold">Type de lieu</ThemedText>
+        <PlaceTypeFilter selected={placeType} onChange={setPlaceType} />
       </View>
 
       <View style={styles.section}>
