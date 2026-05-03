@@ -128,6 +128,9 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'ERROR_CLEAR':
       return { ...state, status: state.status === 'error' ? 'idle' : state.status, error: null };
 
+    case 'HYDRATE':
+      return action.payload;
+
     case 'RESET':
       return initialState;
 

@@ -40,6 +40,7 @@ export type Action =
   | { type: 'STATUS_SET'; payload: AppStatus }
   | { type: 'ERROR_SET'; payload: string }
   | { type: 'ERROR_CLEAR' }
+  | { type: 'HYDRATE'; payload: AppState }
   | { type: 'RESET' };
 
 export const initialState: AppState = {
