@@ -1,98 +1,117 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { router, type Href } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { Button, EmptyState, Screen } from '@/src/components/ui';
+import { FontSize, Palette, Radii, Spacing } from '@/src/constants/theme';
+import { useApp } from '@/src/store/app-context';
+import { selectAllEvents, selectFriends } from '@/src/store/selectors';
+import type { Event, UUID } from '@/src/types/models';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+const STATUS_LABEL: Record<Event['status'], string> = {
+  lobby: 'En attente',
+  swiping: 'Swipe en cours',
+  matched: 'Match trouvé',
+  cancelled: 'Annulé',
+};
+
+export default function EventsScreen() {
+  const { state } = useApp();
+  const events = selectAllEvents(state);
+
+  const handleCreate = (): void => {
+    router.push('/event/create' as Href);
+  };
+
+  const handleOpenEvent = (eventId: UUID): void => {
+    router.push(`/event/${eventId}/lobby` as Href);
+  };
+
+  if (events.length === 0) {
+    return (
+      <Screen padding="lg">
+        <EmptyState
+          title="Aucun event"
+          description="Crée ton premier event pour trouver un resto avec tes amis."
+          action={{ label: '+ Créer un event', onPress: handleCreate }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+      </Screen>
+    );
+  }
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+  return (
+    <Screen padding="lg" scrollable>
+      <View style={styles.header}>
+        <ThemedText type="title">Mes events</ThemedText>
+        <Button label="+ Nouveau" onPress={handleCreate} size="sm" />
+      </View>
+      <View style={styles.list}>
+        {events.map((event) => (
+          <EventListItem
+            key={event.id}
+            event={event}
+            friendsCount={selectFriends(state, event.id).length}
+            onPress={() => handleOpenEvent(event.id)}
+          />
+        ))}
+      </View>
+    </Screen>
+  );
+}
+
+interface EventListItemProps {
+  event: Event;
+  friendsCount: number;
+  onPress: () => void;
+}
+
+function EventListItem({ event, friendsCount, onPress }: EventListItemProps) {
+  const surfaceColor = useThemeColor({ light: '#f4f4f5', dark: '#27272a' }, 'background');
+  const mutedColor = useThemeColor(
+    { light: Palette.mutedLight, dark: Palette.mutedDark },
+    'icon',
+  );
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.item,
+        { backgroundColor: surfaceColor },
+        pressed && styles.pressed,
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel={`Ouvrir l'event ${event.name}`}
+    >
+      <View style={styles.itemInfo}>
+        <ThemedText type="defaultSemiBold">{event.name}</ThemedText>
+        <ThemedText style={[styles.itemMeta, { color: mutedColor }]}>
+          {friendsCount} ami{friendsCount > 1 ? 's' : ''} · {STATUS_LABEL[event.status]}
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+      <ThemedText style={[styles.chevron, { color: mutedColor }]}>›</ThemedText>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    marginBottom: Spacing.lg,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  list: { gap: Spacing.sm },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.lg,
+    borderRadius: Radii.md,
+    gap: Spacing.md,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  itemInfo: { flex: 1, gap: Spacing.xs },
+  itemMeta: { fontSize: FontSize.sm },
+  chevron: { fontSize: FontSize.xxl },
+  pressed: { opacity: 0.7 },
 });
