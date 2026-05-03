@@ -42,7 +42,7 @@ export default function JoinScreen() {
 
         <Input
           label="Ton pseudo"
-          placeholder="Antoine"
+          placeholder="Ton prénom"
           value={pseudo}
           onChangeText={(text) => {
             setPseudo(text);
